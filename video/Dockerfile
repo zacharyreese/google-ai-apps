@@ -12,9 +12,6 @@ RUN npm install
 # Copy application files
 COPY . .
 
-# Create a .env file with the API key from build arg
-RUN echo "VITE_GEMINI_API_KEY=$VITE_GEMINI_API_KEY" > .env
-
 # Build the frontend
 RUN npm run build
 
@@ -26,4 +23,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Start the server
-CMD ["node", "--env-file=.env", "server/index.mjs"]
+CMD ["node", "server/index.mjs"]
