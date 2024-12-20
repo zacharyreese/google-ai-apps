@@ -1,24 +1,29 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18
+FROM node:20-slim
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+# Set working directory
+WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package.json package-lock.json ./
+# Copy package files
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy application files
 COPY . .
 
-# Build the application
+# Create a .env file with the API key from build arg
+RUN echo "VITE_GEMINI_API_KEY=$VITE_GEMINI_API_KEY" > .env
+
+# Build the frontend
 RUN npm run build
 
-# Expose the port your app runs on
-EXPOSE 3000
+# Set production environment
+ENV NODE_ENV=production
+ENV PORT=8080
 
-# Start the application
-CMD ["npm", "run", "dev"]
+# Expose the port
+EXPOSE 8080
 
+# Start the server
+CMD ["node", "--env-file=.env", "server/index.mjs"]
